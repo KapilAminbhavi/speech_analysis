@@ -267,6 +267,8 @@ def main():
     st.markdown(
         "Click 'Start Recording' to begin speaking. Speak as little or as much as you like, then click 'Stop Recording'. Edit the transcription below if needed, then click 'Analyze Speech'.")
 
+    
+    
     # Display topic
     topic = "The importance of learning English"
     st.info(f"Your topic is: {topic}")
@@ -368,6 +370,8 @@ def main():
         st.session_state.audio_data = component_value.get('audio_data', '')
         st.session_state.transcription = component_value.get('transcription', '')
 
+    st.markdown("Please copy and paste the above text into the box below for the analysis")
+    
     # Form for submission with editable transcription
     with st.form(key='recording_form'):
         # Editable transcription area
