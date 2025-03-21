@@ -7,3 +7,4 @@ torch==2.3.0
 streamlit-audiorecorder==0.0.3
 librosa
 setuptools
+httpx==0.27.2
