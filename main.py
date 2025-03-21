@@ -15,13 +15,12 @@ st.set_page_config(
     layout="wide"
 )
 
-# Initialize OpenAI client
-try:
-    api_key = st.secrets["openai_api_key"]
-except KeyError:
-    st.error("OpenAI API key not found in secrets. Please add it to your Streamlit secrets.")
-    st.stop()
+import os
+from openai import OpenAI
 
+api_key = os.getenv("OPENAI_API_KEY")  # Ensure this is set in Streamlit Cloud secrets
+if not api_key:
+    raise ValueError("API key is missing!")
 client = OpenAI(api_key=api_key)
 
 # Load Whisper model (cache it)
