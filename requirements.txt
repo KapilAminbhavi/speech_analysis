@@ -6,3 +6,4 @@ pronouncing==0.2.0
 torch==2.3.0
 streamlit-audiorecorder==0.0.3
 librosa
+setuptools
