@@ -5,8 +5,4 @@ openai-whisper==20231117
 pronouncing==0.2.0
 torch==2.3.0
 streamlit-audiorecorder==0.0.3
-streamlit
-whisper
-pronouncing
-openai
 librosa
