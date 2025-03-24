@@ -23,15 +23,18 @@ if not api_key:
     raise ValueError("API key is missing!")
 client = OpenAI(api_key=api_key)
 
+
 # Load Whisper model (cache it)
 @st.cache_resource
 def load_whisper_model():
     return whisper.load_model("base")
 
+
 # Transcribe audio with Whisper
 def transcribe_audio(audio_path, model):
     result = model.transcribe(audio_path)
     return result["text"]
+
 
 # Phonetic analysis
 def analyze_phonetics(text):
@@ -43,6 +46,7 @@ def analyze_phonetics(text):
             phonemes = pronouncing.phones_for_word(clean_word)
             phoneme_analysis[clean_word] = phonemes if phonemes else "No phoneme found"
     return phoneme_analysis
+
 
 # Analyze speech with GPT
 def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, language_hint=None, expected_topic=None):
@@ -173,20 +177,34 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     - instead of "enjoy" try: "appreciate", "take pleasure in", "find satisfying", "delight in"
     ```
 
-    ## 7. Speaking Rate Analysis
-    Analyze the speaker's pace and fluency.
+    ## 7. Speaking Rate and Pausing Analysis
+    Analyze the speaker's pace, fluency, and pausing patterns based on speaking rate and extra spaces in the transcription.
 
     Example:
     ```
     Speaking rate: 99 words per minute
-    - This is within the lower end of the normal range for native English speakers (90-150 wpm)
+    - This is within the lower range for native English speakers (90-150 wpm)
     - A slightly increased rate might make your speech more engaging
     - Your current rate may be perceived as somewhat measured or careful
-
+    
     Pausing patterns:
-    - You pause frequently between sentences (good for clarity)
-    - Some pauses within sentences disrupt natural flow
-    - Suggestion: Work on reducing mid-sentence pauses except when emphasizing key points
+    - Total pauses: 12 (shown as extra spaces in the transcription)
+    - Pause frequency: 1 pause every 8.3 words (native speakers average 1 pause every 12-15 words)
+    - Pause locations:
+      * Natural pauses (between sentences or clauses): 8 (67%)
+      * Hesitation pauses (mid-sentence/mid-thought): 4 (33%)
+      * Ratio of natural to hesitation pauses: 2:1 (ideal ratio for fluent speech is 3:1 or higher)
+    
+    Pause impact:
+    - Your natural pauses effectively structure your speech and allow listeners to process information
+    - Your hesitation pauses may indicate vocabulary retrieval difficulties or processing time needs
+    - Some pauses create an unnatural rhythm in phrases like "and then   you know" suggesting filler usage
+    
+    Pause improvement suggestions:
+    - Practice reducing hesitation pauses by preparing key vocabulary in advance
+    - Maintain your effective use of natural pauses between complete thoughts
+    - Replace some hesitation pauses with soft connectors like "well," "you see," or "actually"
+    - Work toward the ideal pause pattern of primarily placing pauses at natural grammatical boundaries
     ```
 
     ## 8. Pronunciation Analysis
@@ -242,6 +260,7 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
 
     return response.choices[0].message.content
 
+
 # Main app
 def main():
     st.title("🎙️ English Pronunciation Analyzer")
@@ -267,15 +286,13 @@ def main():
     st.markdown(
         "Click 'Start Recording' to begin speaking. Speak as little or as much as you like, then click 'Stop Recording'. Edit the transcription below if needed, then click 'Analyze Speech'.")
 
-    
-    
     # Display topic
     topic = "The importance of learning English"
     st.info(f"Your topic is: {topic}")
 
     # HTML and JavaScript for recording and real-time transcription
     recording_html = """
-    <div>
+     <div>
         <button type="button" id="start-btn">Start Recording</button>
         <button type="button" id="stop-btn" disabled>Stop Recording</button>
         <textarea id="transcription" style="width:100%; height:200px; margin-top:10px;" placeholder="Your speech will appear here..."></textarea>
@@ -286,35 +303,44 @@ def main():
         const stopBtn = document.getElementById('stop-btn');
         const transcriptionArea = document.getElementById('transcription');
         const audioDataInput = document.getElementById('audio_data');
-
+    
         let recognition;
         let mediaRecorder;
         let audioChunks = [];
-
+        let currentTranscription = ''; // Store finalized transcription
+    
         // Speech recognition setup
         if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
-
+    
             recognition.onresult = (event) => {
-                let transcript = '';
+                let interimTranscript = '';
                 for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        // Append finalized transcript and add a space
+                        currentTranscription += transcript + ' ';
+                        transcriptionArea.value = currentTranscription.trim();
+                    } else {
+                        // Show interim transcript temporarily without appending to final text
+                        interimTranscript = transcript;
+                        transcriptionArea.value = (currentTranscription + ' ' + interimTranscript).trim();
+                    }
                 }
-                transcriptionArea.value = transcript;
             };
-
+    
             recognition.onerror = (event) => {
                 console.error('Speech recognition error:', event.error);
-                transcriptionArea.value = '[Error: ' + event.error + ']';
+                transcriptionArea.value = currentTranscription + ' [Error: ' + event.error + ']';
             };
         } else {
             alert('Speech recognition not supported in this browser.');
             transcriptionArea.value = 'Speech recognition not supported.';
         }
-
+    
         // Audio recording setup
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
             mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
@@ -339,18 +365,19 @@ def main():
             console.error('Microphone access error:', err);
             alert('Could not access microphone: ' + err.message);
         });
-
+    
         // Button event listeners
         startBtn.addEventListener('click', () => {
             if (recognition && mediaRecorder) {
-                transcriptionArea.value = '';
+                // Clear interim but keep finalized text on new recording start
+                transcriptionArea.value = currentTranscription;
                 recognition.start();
                 mediaRecorder.start();
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
             }
         });
-
+    
         stopBtn.addEventListener('click', () => {
             if (recognition && mediaRecorder) {
                 recognition.stop();
@@ -360,7 +387,7 @@ def main():
             }
         });
     </script>
-    """
+        """
 
     # Render the HTML component
     component_value = st.components.v1.html(recording_html, height=300)
@@ -370,8 +397,6 @@ def main():
         st.session_state.audio_data = component_value.get('audio_data', '')
         st.session_state.transcription = component_value.get('transcription', '')
 
-    st.markdown("Please copy and paste the above text into the box below for the analysis")
-    
     # Form for submission with editable transcription
     with st.form(key='recording_form'):
         # Editable transcription area
@@ -399,7 +424,8 @@ def main():
                             temp_audio_path = temp_audio.name
 
                         # Use Whisper only if no transcription provided
-                        final_transcription = transcription if transcription else transcribe_audio(temp_audio_path, model)
+                        final_transcription = transcription if transcription else transcribe_audio(temp_audio_path,
+                                                                                                   model)
                         audio_duration = librosa.get_duration(path=temp_audio_path)
                         word_count = len(final_transcription.split())
                     else:
@@ -497,6 +523,7 @@ def main():
                 st.error(f"Error during analysis: {str(e)}")
                 if os.path.exists(temp_audio_path):
                     os.remove(temp_audio_path)
+
 
 if __name__ == "__main__":
     main()
