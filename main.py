@@ -186,7 +186,7 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     - This is within the lower range for native English speakers (90-150 wpm)
     - A slightly increased rate might make your speech more engaging
     - Your current rate may be perceived as somewhat measured or careful
-    
+
     Pausing patterns:
     - Total pauses: 12 (shown as extra spaces in the transcription)
     - Pause frequency: 1 pause every 8.3 words (native speakers average 1 pause every 12-15 words)
@@ -194,12 +194,12 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
       * Natural pauses (between sentences or clauses): 8 (67%)
       * Hesitation pauses (mid-sentence/mid-thought): 4 (33%)
       * Ratio of natural to hesitation pauses: 2:1 (ideal ratio for fluent speech is 3:1 or higher)
-    
+
     Pause impact:
     - Your natural pauses effectively structure your speech and allow listeners to process information
     - Your hesitation pauses may indicate vocabulary retrieval difficulties or processing time needs
     - Some pauses create an unnatural rhythm in phrases like "and then   you know" suggesting filler usage
-    
+
     Pause improvement suggestions:
     - Practice reducing hesitation pauses by preparing key vocabulary in advance
     - Maintain your effective use of natural pauses between complete thoughts
@@ -303,19 +303,19 @@ def main():
         const stopBtn = document.getElementById('stop-btn');
         const transcriptionArea = document.getElementById('transcription');
         const audioDataInput = document.getElementById('audio_data');
-    
+
         let recognition;
         let mediaRecorder;
         let audioChunks = [];
         let currentTranscription = ''; // Store finalized transcription
-    
+
         // Speech recognition setup
         if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
-    
+
             recognition.onresult = (event) => {
                 let interimTranscript = '';
                 for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -331,7 +331,7 @@ def main():
                     }
                 }
             };
-    
+
             recognition.onerror = (event) => {
                 console.error('Speech recognition error:', event.error);
                 transcriptionArea.value = currentTranscription + ' [Error: ' + event.error + ']';
@@ -340,7 +340,7 @@ def main():
             alert('Speech recognition not supported in this browser.');
             transcriptionArea.value = 'Speech recognition not supported.';
         }
-    
+
         // Audio recording setup
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
             mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
@@ -365,7 +365,7 @@ def main():
             console.error('Microphone access error:', err);
             alert('Could not access microphone: ' + err.message);
         });
-    
+
         // Button event listeners
         startBtn.addEventListener('click', () => {
             if (recognition && mediaRecorder) {
@@ -377,7 +377,7 @@ def main():
                 stopBtn.disabled = false;
             }
         });
-    
+
         stopBtn.addEventListener('click', () => {
             if (recognition && mediaRecorder) {
                 recognition.stop();
