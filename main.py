@@ -61,192 +61,188 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     expected_topic_text = f"Expected speaking topic: {expected_topic}" if expected_topic else "No specific topic was provided for relevance assessment."
 
     prompt = f"""
-    # Comprehensive English Speech Analysis
-
-    Please analyze this transcribed English speech thoroughly using the provided data and create a detailed assessment report.
-
-    ## Transcribed Speech:
-    "{text}"
-
-    ## Phonetic Analysis:
-    {json.dumps(phoneme_data, indent=2)}
-
-    ## Additional Information:
-    {f"- Speaking rate: {speaking_rate} words per minute" if speaking_rate else ""}
-    {language_hint_text}
-    {expected_topic_text}
-
-    # Analysis Requirements
-
-    ## 1. CEFR Level Assessment
-    Rate the speaker on the CEFR scale (A1-C2) for each of the following categories:
-    - Fluency
-    - Grammar
-    - Vocabulary
-    - Pronunciation
-    - Interaction
-
-    Example assessment:
-    ```
-    Fluency: C1 - Can express themselves fluently and spontaneously without much obvious searching for expressions.
-    Grammar: C2 - Maintains consistent grammatical control of complex language with minimal errors.
-    Vocabulary: B2 - Has a good range of vocabulary for matters connected to their field and most general topics.
-    Pronunciation: C2 - Has acquired a clear, natural pronunciation and intonation.
-    Interaction: C1 - Can select a suitable phrase from a readily available range of discourse functions to preface remarks.
-    Overall CEFR Level: C1 (Advanced)
-    ```
-
-    ## 2. Strengths & Areas for Improvement
-    Identify clear strengths and specific areas for improvement.
-
-    Example:
-    ```
-    Strengths:
-    - You made very few grammatical errors.
-    - You used 5 advanced grammar constructions (relative clauses, passive voice, tags, etc.)
-    - 75% of your sentences had a complex structure.
-    - You're an expert at using phrasal verbs ("get along", "have been", etc.)
-    - You have a large active vocabulary with high-level words.
-
-    Areas for Improvement:
-    - Your speaking rate (99 wpm) and pausing are below native level (90-150 wpm).
-    - Reduce the number of time-fillers: "also" 8 times, "always" 6 times, "like" 5 times.
-    - Use more synonyms for frequently repeated words.
-    - Add various linking words (such as "besides", "in order to", "therefore").
-    ```
-
-    ## 3. Native-Like Rephrasing
-    Provide examples of how a native speaker would rephrase 5 of the speaker's sentences.
-
-    Example:
-    ```
-    Original: "My name is Joy and I have a degree in Bachelor of Secondary Education."
-    Native-like: "Hi, I'm Joy and I graduated with a degree in Bachelor of Secondary Education."
-
-    Original: "I have five years of teaching experience and also have other jobs like hosting events."
-    Native-like: "I've been teaching for five years and I also have experience hosting events."
-    ```
-
-    ## 4. Vocabulary Analysis
-    Analyze the speaker's vocabulary usage with statistics.
-
-    Example:
-    ```
-    Vocabulary Statistics:
-    - Active vocabulary: approximately 3688 words (B2 level)
-    - Unique words: 128 words used only once in your speech
-    - Rare words: 30% of words used are not among the 5,000 most common English words
-    - Common words: 84% of words used are among the 2,000 most frequently used English words
-
-    Vocabulary Level Distribution:
-    - Beginner (A1): 30%
-    - Elementary (A2): 19%
-    - Intermediate (B1): 27%
-    - Upper-intermediate (B2): 20%
-    - Advanced (C1): 2%
-    - Proficiency (C2): 2%
-    ```
-
-    ## 5. Word Level Classification
-    Provide examples of words used at different CEFR levels.
-
-    Example:
-    ```
-    A1 words: different, difficult, sometimes, birthday
-    A2 words: first of all, text message, as well as, be able to
-    B1 words: communication, experienced, right after, at same time
-    B2 words: get involved with, emotionally, aside from, commitment
-    C1 words: ministry, outcome, days
-    C2 words: have no time for, be something, dated
-    ```
-
-    ## 6. Word Repetition Analysis
-    Identify the most frequently repeated words or phrases.
-
-    Example:
-    ```
-    Top repeated words:
-    - "also" - 8 times
-    - "enjoy" - 7 times
-    - "online conference" - 5 times
-    - "always" - 4 times
-    - "job seeker communicate" - 3 times
-
-    Suggestion: Replace some instances with alternatives such as:
-    - instead of "also" try: "additionally", "furthermore", "moreover", "in addition"
-    - instead of "enjoy" try: "appreciate", "take pleasure in", "find satisfying", "delight in"
-    ```
-
-    ## 7. Speaking Rate and Pausing Analysis
-    Analyze the speaker's pace, fluency, and pausing patterns based on speaking rate and extra spaces in the transcription.
-
-    Example:
-    ```
-    Speaking rate: 99 words per minute
-    - This is within the lower range for native English speakers (90-150 wpm)
-    - A slightly increased rate might make your speech more engaging
-    - Your current rate may be perceived as somewhat measured or careful
-
-    Pausing patterns:
-    - Total pauses: 12 (shown as extra spaces in the transcription)
-    - Pause frequency: 1 pause every 8.3 words (native speakers average 1 pause every 12-15 words)
-    - Pause locations:
-      * Natural pauses (between sentences or clauses): 8 (67%)
-      * Hesitation pauses (mid-sentence/mid-thought): 4 (33%)
-      * Ratio of natural to hesitation pauses: 2:1 (ideal ratio for fluent speech is 3:1 or higher)
-
-    Pause impact:
-    - Your natural pauses effectively structure your speech and allow listeners to process information
-    - Your hesitation pauses may indicate vocabulary retrieval difficulties or processing time needs
-    - Some pauses create an unnatural rhythm in phrases like "and then   you know" suggesting filler usage
-
-    Pause improvement suggestions:
-    - Practice reducing hesitation pauses by preparing key vocabulary in advance
-    - Maintain your effective use of natural pauses between complete thoughts
-    - Replace some hesitation pauses with soft connectors like "well," "you see," or "actually"
-    - Work toward the ideal pause pattern of primarily placing pauses at natural grammatical boundaries
-    ```
-
-    ## 8. Pronunciation Analysis
-    Identify specific pronunciation issues and patterns.
-
-    Example:
-    ```
-    Pronunciation patterns:
-    - Consistent difficulty with "th" sounds (pronouncing them as "d" or "z")
-    - Tendency to reduce vowel contrast between "ship" and "sheep"
-    - Word stress often placed on incorrect syllables (e.g., "CON-tent" instead of "con-TENT")
-    - Difficulty with consonant clusters in words like "strengths" or "sixths"
-
-    Phonetic inaccuracies that change meaning:
-    - "sheet" pronounced as "shit" (vowel length issue)
-    - "peace" pronounced similar to "piss" (vowel quality)
-    - "focus" pronounced similar to "fox" (syllable reduction)
-    ```
-
-    ## Mother Tongue Influence (MTI)
-    Identify specific patterns that suggest influence from the speaker's native language.
-
-    ## Grammar Analysis
-    Identify grammar patterns, both strengths and errors.
-
-    ## Specific Improvement Plan
-    Provide 3-5 concrete, actionable tips for improvement.
-
-    ## 9. Topic Relevance Analysis
-    Analyze how relevant the speech is to the expected topic.
-
-    Example:
-    ```
-    Expected Topic: "Car"
-    Relevance Score: 3/10 (Low)
-
-    Topic Analysis:
-    - Only 15% of the content was related to cars or transportation
-    - The speaker frequently digressed to unrelated topics such as weather, food, and personal hobbies
-    - Main irrelevant topics mentioned: sun (5 times), cooking (3 times), weekend activities (2 minutes)
-    - Recommendation: Focus more directly on the assigned topic and avoid unnecessary digressions
-    ```
+    # Comprehensive English Speech Analysis Protocol
+    
+    Analyze the provided English speech transcript according to these precise guidelines to generate a standardized assessment report.
+    
+    ## Input Data
+    
+    - **Speech Transcript:** "{text}"
+    - **Phonetic Data:** {json.dumps(phoneme_data, indent=2)}
+    - **Speaking Rate:** {speaking_rate} words per minute (if available)
+    - **Language Background:** {language_hint_text}
+    - **Expected Topic:** {expected_topic_text}
+    
+    ## Required Analysis Sections
+    
+    ### 1. CEFR Level Assessment
+    
+    Provide a precise CEFR rating (A1-C2) for each category with supporting evidence:
+    
+    | Category | Rating | Evidence |
+    |----------|--------|----------|
+    | Fluency | [CEFR Level] | [Specific evidence from transcript] |
+    | Grammar | [CEFR Level] | [Specific evidence from transcript] |
+    | Vocabulary | [CEFR Level] | [Specific evidence from transcript] |
+    | Pronunciation | [CEFR Level] | [Specific evidence from transcript] |
+    | Interaction | [CEFR Level] | [Specific evidence from transcript] |
+    | **Overall CEFR Level** | [CEFR Level] | [Summary justification] |
+    
+    ### 2. Quantitative Strengths & Weaknesses Analysis
+    
+    **Strengths:**
+    - **Grammar Accuracy:** [X]% of sentences grammatically correct
+    - **Sentence Complexity:** [X]% complex sentences, [X]% compound sentences, [X]% simple sentences
+    - **Advanced Constructions:** [Exact number] of [specific constructions] used
+    - **Vocabulary Range:** [Specific metrics about vocabulary diversity]
+    
+    **Areas for Improvement:**
+    - **Speaking Rate:** [Specific comparison to target range with percentage deviation]
+    - **Filler Usage:** [Exact count] of each filler word/phrase
+    - **Word Repetition:** [Specific words/phrases with exact repetition counts]
+    - **Linking Words:** [Analysis of connector usage with specific metrics]
+    
+    ### 3. Native-Like Rephrasing
+    
+    Identify exactly 5 non-native-like constructions and provide native-like alternatives:
+    
+    | Non-Native Construction | Native-Like Alternative | Improvement Explanation |
+    |-------------------------|-------------------------|-------------------------|
+    | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
+    | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
+    | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
+    | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
+    | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
+    
+    ### 4. Vocabulary Metrics
+    
+    **Quantitative Analysis:**
+    - **Total Word Count:** [Exact number]
+    - **Unique Word Count:** [Exact number]
+    - **Type-Token Ratio:** [Calculated ratio]
+    - **Lexical Density:** [Calculated percentage]
+    - **Academic Word List Coverage:** [Percentage of academic vocabulary]
+    
+    **CEFR Level Distribution:**
+    - A1: [X]% ([number] words)
+    - A2: [X]% ([number] words)
+    - B1: [X]% ([number] words)
+    - B2: [X]% ([number] words)
+    - C1: [X]% ([number] words)
+    - C2: [X]% ([number] words)
+    
+    ### 5. Word Level Classification Table
+    
+    Provide exactly 5 examples for each CEFR level:
+    
+    | CEFR Level | Word/Phrase Examples |
+    |------------|----------------------|
+    | A1 | [5 specific examples from transcript] |
+    | A2 | [5 specific examples from transcript] |
+    | B1 | [5 specific examples from transcript] |
+    | B2 | [5 specific examples from transcript] |
+    | C1 | [5 specific examples from transcript] |
+    | C2 | [5 specific examples from transcript] |
+    
+    ### 6. Word Repetition Analysis
+    
+    **High-Frequency Words/Phrases:**
+    - [Word/phrase]: [Exact count] occurrences
+    - [Word/phrase]: [Exact count] occurrences
+    - [Word/phrase]: [Exact count] occurrences
+    - [Word/phrase]: [Exact count] occurrences
+    - [Word/phrase]: [Exact count] occurrences
+    
+    **Suggested Alternatives:**
+    - For [word/phrase]: [alternative 1], [alternative 2], [alternative 3]
+    - For [word/phrase]: [alternative 1], [alternative 2], [alternative 3]
+    
+    ### 7. Speaking Rate and Pause Analysis
+    
+    **Rate Metrics:**
+    - **Words Per Minute:** [Exact number]
+    - **Syllables Per Minute:** [Estimated number]
+    - **Comparison to Native Range:** [Deviation percentage]
+    
+    **Pause Analysis:**
+    - **Total Pauses:** [Exact number]
+    - **Natural Pauses:** [Exact number] ([X]%)
+    - **Hesitation Pauses:** [Exact number] ([X]%)
+    - **Pause Frequency:** 1 pause every [X] words
+    - **Average Pause Duration:** [Estimated duration]
+    
+    **Fluency Assessment:**
+    - **Pause-to-Speech Ratio:** [Calculated ratio]
+    - **Flow Disruption Score:** [Quantitative measure]
+    - **Specific Disruption Patterns:** [List of patterns with examples]
+    
+    ### 8. Pronunciation Analysis
+    
+    **Phoneme Accuracy:**
+    - **Vowels:** [X]% accuracy
+    - **Consonants:** [X]% accuracy
+    - **Consonant Clusters:** [X]% accuracy
+    - **Diphthongs:** [X]% accuracy
+    
+    **Specific Issues:**
+    - [Phoneme]: [Description of issue] in words [example 1], [example 2]
+    - [Phoneme]: [Description of issue] in words [example 1], [example 2]
+    
+    **Prosodic Features:**
+    - **Word Stress:** [Analysis with specific examples]
+    - **Sentence Stress:** [Analysis with specific examples]
+    - **Intonation Patterns:** [Analysis with specific examples]
+    - **Rhythm:** [Analysis with specific examples]
+    
+    ### 9. Mother Tongue Influence (MTI)
+    
+    - **Identified First Language:** [Language] (confidence level: [high/medium/low])
+    - **Phonological Influences:** [Specific patterns with examples]
+    - **Syntactic Influences:** [Specific patterns with examples]
+    - **Lexical Influences:** [Specific patterns with examples]
+    
+    ### 10. Grammar Analysis
+    
+    **Accuracy Statistics:**
+    - **Error-Free Clauses:** [X]%
+    - **Error-Free T-Units:** [X]%
+    
+    **Grammar Strengths:**
+    - [Specific construction]: Used correctly [X] times
+    - [Specific construction]: Used correctly [X] times
+    
+    **Grammar Errors:**
+    - [Error type]: [X] instances (e.g., [example from transcript])
+    - [Error type]: [X] instances (e.g., [example from transcript])
+    
+    ### 11. Improvement Plan
+    
+    | Priority | Focus Area | Specific Exercise | Expected Outcome | Time Frame |
+    |----------|------------|-------------------|------------------|------------|
+    | 1 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
+    | 2 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
+    | 3 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
+    | 4 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
+    | 5 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
+    
+    ### 12. Topic Relevance Analysis
+    
+    - **Expected Topic:** [Topic]
+    - **Relevance Score:** [0-10]
+    - **On-Topic Content:** [X]%
+    - **Off-Topic Content:** [X]%
+    - **Main Digressions:** [List with frequency]
+    - **Coherence Assessment:** [Analysis of logical flow]
+    
+    ## Report Format Requirements
+    
+    1. All sections must be completed with precise quantitative data where applicable
+    2. No subjective evaluations without supporting evidence
+    3. All examples must be direct quotes from the transcript
+    4. Tables must be properly formatted with aligned columns
+    5. Numerical data must include units of measurement where appropriate
+    6. Analysis must be evidence-based with specific references to the speech content
+    7. All improvement recommendations must be actionable and specific
 
     Please include this relevance analysis in your report. If no expected topic was provided, note that topic relevance couldn't be assessed.
 
@@ -255,10 +251,12 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.2
     )
 
     return response.choices[0].message.content
+
 
 
 # Main app
