@@ -62,23 +62,54 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
 
     prompt = f"""
     # Comprehensive English Speech Analysis Protocol
-    
+
     Analyze the provided English speech transcript according to these precise guidelines to generate a standardized assessment report.
-    
+
     ## Input Data
-    
+
     - **Speech Transcript:** "{text}"
     - **Phonetic Data:** {json.dumps(phoneme_data, indent=2)}
     - **Speaking Rate:** {speaking_rate} words per minute (if available)
     - **Language Background:** {language_hint_text}
     - **Expected Topic:** {expected_topic_text}
-    
+
+    ## Advanced Level Differentiation Guidelines
+
+    ### CEFR Level Granular Markers
+
+    #### A1-A2 Specific Indicators:
+    - Vocabulary Range: 300-1500 words
+    - Primarily simple present tense usage
+    - Frequent grammatical errors
+    - Highly fragmented speech patterns
+    - Pronunciation challenges
+    - Speaking rate: 40-60 words per minute
+    - High communication breakdown percentage (30-50%)
+
+    #### B1-B2 Nuanced Characteristics:
+    - Vocabulary Range: 1500-4000 words
+    - Multi-tense usage with increasing complexity
+    - Moderate to minimal grammatical errors
+    - Developing complex sentence structures
+    - Clearer pronunciation
+    - Speaking rate: 60-130 words per minute
+    - Reduced communication imprecision (10-25%)
+
+    #### C1-C2 Sophisticated Markers:
+    - Vocabulary Range: 4000-8000+ words
+    - Advanced grammatical manipulation
+    - Near-native discourse capabilities
+    - Minimal to zero grammatical errors
+    - Academic/professional level language use
+    - Speaking rate: 130-180 words per minute
+    - Virtually zero communication barriers
+
     ## Required Analysis Sections
-    
+
     ### 1. CEFR Level Assessment
-    
+
     Provide a precise CEFR rating (A1-C2) for each category with supporting evidence:
-    
+
     | Category | Rating | Evidence |
     |----------|--------|----------|
     | Fluency | [CEFR Level] | [Specific evidence from transcript] |
@@ -87,25 +118,25 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     | Pronunciation | [CEFR Level] | [Specific evidence from transcript] |
     | Interaction | [CEFR Level] | [Specific evidence from transcript] |
     | **Overall CEFR Level** | [CEFR Level] | [Summary justification] |
-    
+
     ### 2. Quantitative Strengths & Weaknesses Analysis
-    
+
     **Strengths:**
     - **Grammar Accuracy:** [X]% of sentences grammatically correct
     - **Sentence Complexity:** [X]% complex sentences, [X]% compound sentences, [X]% simple sentences
     - **Advanced Constructions:** [Exact number] of [specific constructions] used
     - **Vocabulary Range:** [Specific metrics about vocabulary diversity]
-    
+
     **Areas for Improvement:**
     - **Speaking Rate:** [Specific comparison to target range with percentage deviation]
     - **Filler Usage:** [Exact count] of each filler word/phrase
     - **Word Repetition:** [Specific words/phrases with exact repetition counts]
     - **Linking Words:** [Analysis of connector usage with specific metrics]
-    
+
     ### 3. Native-Like Rephrasing
-    
+
     Identify exactly 5 non-native-like constructions and provide native-like alternatives:
-    
+
     | Non-Native Construction | Native-Like Alternative | Improvement Explanation |
     |-------------------------|-------------------------|-------------------------|
     | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
@@ -113,16 +144,16 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
     | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
     | [Direct quote from transcript] | [Improved version] | [Specific linguistic explanation] |
-    
+
     ### 4. Vocabulary Metrics
-    
+
     **Quantitative Analysis:**
     - **Total Word Count:** [Exact number]
     - **Unique Word Count:** [Exact number]
     - **Type-Token Ratio:** [Calculated ratio]
     - **Lexical Density:** [Calculated percentage]
     - **Academic Word List Coverage:** [Percentage of academic vocabulary]
-    
+
     **CEFR Level Distribution:**
     - A1: [X]% ([number] words)
     - A2: [X]% ([number] words)
@@ -130,11 +161,11 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     - B2: [X]% ([number] words)
     - C1: [X]% ([number] words)
     - C2: [X]% ([number] words)
-    
+
     ### 5. Word Level Classification Table
-    
+
     Provide exactly 5 examples for each CEFR level:
-    
+
     | CEFR Level | Word/Phrase Examples |
     |------------|----------------------|
     | A1 | [5 specific examples from transcript] |
@@ -143,80 +174,80 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     | B2 | [5 specific examples from transcript] |
     | C1 | [5 specific examples from transcript] |
     | C2 | [5 specific examples from transcript] |
-    
+
     ### 6. Word Repetition Analysis
-    
+
     **High-Frequency Words/Phrases:**
     - [Word/phrase]: [Exact count] occurrences
     - [Word/phrase]: [Exact count] occurrences
     - [Word/phrase]: [Exact count] occurrences
     - [Word/phrase]: [Exact count] occurrences
     - [Word/phrase]: [Exact count] occurrences
-    
+
     **Suggested Alternatives:**
     - For [word/phrase]: [alternative 1], [alternative 2], [alternative 3]
     - For [word/phrase]: [alternative 1], [alternative 2], [alternative 3]
-    
+
     ### 7. Speaking Rate and Pause Analysis
-    
+
     **Rate Metrics:**
     - **Words Per Minute:** [Exact number]
     - **Syllables Per Minute:** [Estimated number]
     - **Comparison to Native Range:** [Deviation percentage]
-    
+
     **Pause Analysis:**
     - **Total Pauses:** [Exact number]
     - **Natural Pauses:** [Exact number] ([X]%)
     - **Hesitation Pauses:** [Exact number] ([X]%)
     - **Pause Frequency:** 1 pause every [X] words
     - **Average Pause Duration:** [Estimated duration]
-    
+
     **Fluency Assessment:**
     - **Pause-to-Speech Ratio:** [Calculated ratio]
     - **Flow Disruption Score:** [Quantitative measure]
     - **Specific Disruption Patterns:** [List of patterns with examples]
-    
+
     ### 8. Pronunciation Analysis
-    
+
     **Phoneme Accuracy:**
     - **Vowels:** [X]% accuracy
     - **Consonants:** [X]% accuracy
     - **Consonant Clusters:** [X]% accuracy
     - **Diphthongs:** [X]% accuracy
-    
+
     **Specific Issues:**
     - [Phoneme]: [Description of issue] in words [example 1], [example 2]
     - [Phoneme]: [Description of issue] in words [example 1], [example 2]
-    
+
     **Prosodic Features:**
     - **Word Stress:** [Analysis with specific examples]
     - **Sentence Stress:** [Analysis with specific examples]
     - **Intonation Patterns:** [Analysis with specific examples]
     - **Rhythm:** [Analysis with specific examples]
-    
+
     ### 9. Mother Tongue Influence (MTI)
-    
+
     - **Identified First Language:** [Language] (confidence level: [high/medium/low])
     - **Phonological Influences:** [Specific patterns with examples]
     - **Syntactic Influences:** [Specific patterns with examples]
     - **Lexical Influences:** [Specific patterns with examples]
-    
+
     ### 10. Grammar Analysis
-    
+
     **Accuracy Statistics:**
     - **Error-Free Clauses:** [X]%
     - **Error-Free T-Units:** [X]%
-    
+
     **Grammar Strengths:**
     - [Specific construction]: Used correctly [X] times
     - [Specific construction]: Used correctly [X] times
-    
+
     **Grammar Errors:**
     - [Error type]: [X] instances (e.g., [example from transcript])
     - [Error type]: [X] instances (e.g., [example from transcript])
-    
+
     ### 11. Improvement Plan
-    
+
     | Priority | Focus Area | Specific Exercise | Expected Outcome | Time Frame |
     |----------|------------|-------------------|------------------|------------|
     | 1 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
@@ -224,18 +255,44 @@ def analyze_speech(text, phoneme_data, audio_duration=None, word_count=None, lan
     | 3 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
     | 4 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
     | 5 | [Area] | [Detailed exercise] | [Measurable outcome] | [Duration] |
-    
+
     ### 12. Topic Relevance Analysis
-    
+
     - **Expected Topic:** [Topic]
     - **Relevance Score:** [0-10]
     - **On-Topic Content:** [X]%
     - **Off-Topic Content:** [X]%
     - **Main Digressions:** [List with frequency]
     - **Coherence Assessment:** [Analysis of logical flow]
-    
+
+    ### 13. Linguistic Dimension Weights
+
+    **Weighted Assessment Criteria:**
+    - **Grammar:** 25% (Structural accuracy, complexity)
+    - **Vocabulary:** 20% (Range, appropriateness, diversity)
+    - **Pronunciation:** 15% (Clarity, accent, intelligibility)
+    - **Fluency:** 15% (Speech rate, cohesion, naturalness)
+    - **Discourse Management:** 15% (Topic relevance, logical progression)
+    - **Interaction:** 10% (Responsive communication effectiveness)
+
+    ### 14. Mother Tongue Influence (MTI) Deep Analysis
+
+    - **Linguistic Transfer Mapping:**
+      - Identify specific phonological transfers
+      - Quantify syntactic influence percentage
+      - Trace lexical borrowing patterns
+    - **Accent Influence Score:** [Quantitative measure of native language impact]
+    - **Communication Strategy Adaptations:** [Specific recommendations]
+
+    ### 15. Adaptive Improvement Recommendations
+
+    - **Personalized Learning Trajectory:**
+      - Machine learning-informed skill development path
+      - Domain-specific language improvement strategies
+      - Targeted intervention recommendations based on detected weaknesses
+
     ## Report Format Requirements
-    
+
     1. All sections must be completed with precise quantitative data where applicable
     2. No subjective evaluations without supporting evidence
     3. All examples must be direct quotes from the transcript
